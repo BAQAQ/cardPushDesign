@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <properties resource="db.properties"/>
+
+    <settings>
+        <!-- Enables automatic mapping from database column names with underscores to Java camelCase properties -->
+        <setting name="mapUnderscoreToCamelCase" value="true"/>
+        <!-- Sets the logging implementation to LOG4J2 for detailed SQL output -->
+        <setting name="logImpl" value="LOG4J2"/>
+    </settings>
+
+    <typeAliases>
+        <!-- Scans the specified package for VO/Entity classes and creates aliases for them -->
+        <package name="com.example.carddesign.vo"/>
+    </typeAliases>
+
+    <environments default="development">
+        <environment id="development">
+            <transactionManager type="JDBC"/>
+            <dataSource type="POOLED">
+                <property name="driver" value="${jdbc.driver}"/>
+                <property name="url" value="${jdbc.url}"/>
+                <property name="username" value="${jdbc.username}"/>
+                <property name="password" value="${jdbc.password}"/>
+            </dataSource>
+        </environment>
+    </environments>
+
+    <mappers>
+        <!-- Registers Mapper XML files from the new package location -->
+        <mapper resource="com/example/carddesign/mapper/FavoriteCardMapper.xml"/>
+        <mapper resource="com/example/carddesign/mapper/PushConfigMapper.xml"/>
+        <mapper resource="com/example/carddesign/mapper/PushTimeMapper.xml"/>
+        <mapper resource="com/example/carddesign/mapper/MessageLogMapper.xml"/>
+    </mappers>
+</configuration>

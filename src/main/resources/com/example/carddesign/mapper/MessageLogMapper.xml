@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.carddesign.mapper.MessageLogMapper">
+
+    <insert id="insertMessageLog" parameterType="com.example.carddesign.vo.MessageLog" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO message_log (
+        favorite_id, message_content, enable_flag, create_user, create_time, update_user, update_time
+        ) VALUES (
+        #{favoriteId}, #{messageContent}, #{enableFlag}, #{createUser}, #{createTime}, #{updateUser}, #{updateTime}
+        )
+    </insert>
+
+    <select id="selectMessageLogById" parameterType="java.lang.Long" resultType="com.example.carddesign.vo.MessageLog">
+        SELECT
+        id, favorite_id, message_content, enable_flag, create_user, create_time, update_user, update_time
+        FROM
+        message_log
+        WHERE
+        id = #{id}
+    </select>
+
+    <select id="selectEnabledMessageLogsByFavoriteId" parameterType="java.lang.Long" resultType="com.example.carddesign.vo.MessageLog">
+        SELECT
+        id, favorite_id, message_content, enable_flag, create_user, create_time, update_user, update_time
+        FROM
+        message_log
+        WHERE
+        favorite_id = #{favoriteId} AND enable_flag = 1
+        ORDER BY create_time DESC
+    </select>
+
+    <select id="selectAllEnabledMessageLogs" resultType="com.example.carddesign.vo.MessageLog">
+        SELECT
+        id, favorite_id, message_content, enable_flag, create_user, create_time, update_user, update_time
+        FROM
+        message_log
+        WHERE
+        enable_flag = 1
+        ORDER BY create_time DESC
+    </select>
+
+    <update id="updateMessageLog" parameterType="com.example.carddesign.vo.MessageLog">
+        UPDATE message_log
+        <set>
+            <if test="messageContent != null">
+                message_content = #{messageContent},
+            </if>
+            <if test="enableFlag != null">
+                enable_flag = #{enableFlag},
+            </if>
+            update_user = #{updateUser},
+            update_time = #{updateTime}
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <update id="logicDeleteMessageLog" parameterType="java.lang.Long">
+        UPDATE message_log
+        SET
+        enable_flag = 0,
+        update_user = -1,
+        update_time = NOW()
+        WHERE
+        id = #{id}
+    </update>
+
+    <update id="logicDeleteMessageLogsByFavoriteId" parameterType="java.lang.Long">
+        UPDATE message_log
+        SET
+        enable_flag = 0,
+        update_user = -1,
+        update_time = NOW()
+        WHERE
+        favorite_id = #{favoriteId}
+    </update>
+
+</mapper>

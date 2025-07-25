@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.carddesign.mapper.PushConfigMapper">
+
+    <resultMap id="PushConfigResultMap" type="com.example.carddesign.vo.PushConfig">
+        <id property="id" column="pc_id"/>
+        <result property="userId" column="pc_user_id"/>
+        <result property="projectCode" column="pc_project_code"/>
+        <result property="pushFrequency" column="pc_push_frequency"/>
+        <result property="content" column="pc_content"/>
+        <result property="businessType" column="pc_business_type"/>
+        <result property="favoriteId" column="pc_favorite_id"/>
+        <result property="enableFlag" column="pc_enable_flag"/>
+        <result property="createUser" column="pc_create_user"/>
+        <result property="createTime" column="pc_create_time"/>
+        <result property="updateUser" column="pc_update_user"/>
+        <result property="updateTime" column="pc_update_time"/>
+        <collection property="pushTimes" ofType="com.example.carddesign.vo.PushTime">
+            <id property="id" column="pt_id"/>
+            <result property="pushConfigId" column="pt_push_config_id"/>
+            <result property="weekday" column="pt_weekday"/>
+            <result property="monthDay" column="pt_month_day"/>
+            <result property="hour" column="pt_hour"/>
+            <result property="enableFlag" column="pt_enable_flag"/>
+            <result property="createUser" column="pt_create_user"/>
+            <result property="createTime" column="pt_create_time"/>
+            <result property="updateUser" column="pt_update_user"/>
+            <result property="updateTime" column="pt_update_time"/>
+        </collection>
+    </resultMap>
+
+    <insert id="insertPushConfig" parameterType="com.example.carddesign.vo.PushConfig" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO push_config (
+        user_id, project_code, push_frequency, content, business_type, favorite_id, enable_flag, create_user, create_time, update_user, update_time
+        ) VALUES (
+        #{userId}, #{projectCode}, #{pushFrequency}, #{content}, #{businessType}, #{favoriteId}, #{enableFlag}, #{createUser}, #{createTime}, #{updateUser}, #{updateTime}
+        )
+    </insert>
+
+    <select id="selectPushConfigById" parameterType="java.lang.Long" resultMap="PushConfigResultMap">
+        SELECT
+        pc.id AS pc_id,
+        pc.user_id AS pc_user_id,
+        pc.project_code AS pc_project_code,
+        pc.push_frequency AS pc_push_frequency,
+        pc.content AS pc_content,
+        pc.business_type AS pc_business_type,
+        pc.favorite_id AS pc_favorite_id,
+        pc.enable_flag AS pc_enable_flag,
+        pc.create_user AS pc_create_user,
+        pc.create_time AS pc_create_time,
+        pc.update_user AS pc_update_user,
+        pc.update_time AS pc_update_time,
+        pt.id AS pt_id,
+        pt.push_config_id AS pt_push_config_id,
+        pt.weekday AS pt_weekday,
+        pt.month_day AS pt_month_day,
+        pt.hour AS pt_hour,
+        pt.enable_flag AS pt_enable_flag,
+        pt.create_user AS pt_create_user,
+        pt.create_time AS pt_create_time,
+        pt.update_user AS pt_update_user,
+        pt.update_time AS pt_update_time
+        FROM
+        push_config pc
+        LEFT JOIN
+        push_time pt ON pc.id = pt.push_config_id AND pt.enable_flag = 1
+        WHERE
+        pc.id = #{id}
+    </select>
+
+    <select id="selectAllEnabledPushConfigsByUserIdAndProjectCode" resultMap="PushConfigResultMap">
+        SELECT
+        pc.id AS pc_id,
+        pc.user_id AS pc_user_id,
+        pc.project_code AS pc_project_code,
+        pc.push_frequency AS pc_push_frequency,
+        pc.content AS pc_content,
+        pc.business_type AS pc_business_type,
+        pc.favorite_id AS pc_favorite_id,
+        pc.enable_flag AS pc_enable_flag,
+        pc.create_user AS pc_create_user,
+        pc.create_time AS pc_create_time,
+        pc.update_user AS pc_update_user,
+        pc.update_time AS pc_update_time,
+        pt.id AS pt_id,
+        pt.push_config_id AS pt_push_config_id,
+        pt.weekday AS pt_weekday,
+        pt.month_day AS pt_month_day,
+        pt.hour AS pt_hour,
+        pt.enable_flag AS pt_enable_flag,
+        pt.create_user AS pt_create_user,
+        pt.create_time AS pt_create_time,
+        pt.update_user AS pt_update_user,
+        pt.update_time AS pt_update_time
+        FROM
+        push_config pc
+        LEFT JOIN
+        push_time pt ON pc.id = pt.push_config_id AND pt.enable_flag = 1
+        WHERE
+        pc.user_id = #{userId} AND pc.project_code = #{projectCode} AND pc.enable_flag = 1
+        ORDER BY pc.id
+    </select>
+
+    <select id="selectConfigByUserIdAndProjectCodeAndFavoriteId" resultMap="PushConfigResultMap">
+        SELECT
+        pc.id AS pc_id,
+        pc.user_id AS pc_user_id,
+        pc.project_code AS pc_project_code,
+        pc.push_frequency AS pc_push_frequency,
+        pc.content AS pc_content,
+        pc.business_type AS pc_business_type,
+        pc.favorite_id AS pc_favorite_id,
+        pc.enable_flag AS pc_enable_flag,
+        pc.create_user AS pc_create_user,
+        pc.create_time AS pc_create_time,
+        pc.update_user AS pc_update_user,
+        pc.update_time AS pc_update_time,
+        pt.id AS pt_id,
+        pt.push_config_id AS pt_push_config_id,
+        pt.weekday AS pt_weekday,
+        pt.month_day AS pt_month_day,
+        pt.hour AS pt_hour,
+        pt.enable_flag AS pt_enable_flag,
+        pt.create_user AS pt_create_user,
+        pt.create_time AS pt_create_time,
+        pt.update_user AS pt_update_user,
+        pt.update_time AS pt_update_time
+        FROM
+        push_config pc
+        LEFT JOIN
+        push_time pt ON pc.id = pt.push_config_id AND pt.enable_flag = 1
+        WHERE
+        pc.user_id = #{userId} AND pc.project_code = #{projectCode} AND pc.favorite_id = #{favoriteId}
+    </select>
+
+    <update id="updatePushConfig" parameterType="com.example.carddesign.vo.PushConfig">
+        UPDATE push_config
+        <set>
+            <if test="pushFrequency != null">
+                push_frequency = #{pushFrequency},
+            </if>
+            <if test="content != null">
+                content = #{content},
+            </if>
+            <if test="businessType != null">
+                business_type = #{businessType},
+            </if>
+            <if test="favoriteId != null">
+                favorite_id = #{favoriteId},
+            </if>
+            <if test="enableFlag != null">
+                enable_flag = #{enableFlag},
+            </if>
+            update_user = #{updateUser},
+            update_time = #{updateTime}
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <select id="selectAllEnabledPushConfigs" resultMap="PushConfigResultMap">
+        SELECT
+        pc.id AS pc_id,
+        pc.user_id AS pc_user_id,
+        pc.project_code AS pc_project_code,
+        pc.push_frequency AS pc_push_frequency,
+        pc.content AS pc_content,
+        pc.business_type AS pc_business_type,
+        pc.favorite_id AS pc_favorite_id,
+        pc.enable_flag AS pc_enable_flag,
+        pc.create_user AS pc_create_user,
+        pc.create_time AS pc_create_time,
+        pc.update_user AS pc_update_user,
+        pc.update_time AS pc_update_time,
+        pt.id AS pt_id,
+        pt.push_config_id AS pt_push_config_id,
+        pt.weekday AS pt_weekday,
+        pt.month_day AS pt_month_day,
+        pt.hour AS pt_hour,
+        pt.enable_flag AS pt_enable_flag,
+        pt.create_user AS pt_create_user,
+        pt.create_time AS pt_create_time,
+        pt.update_user AS pt_update_user,
+        pt.update_time AS pt_update_time
+        FROM
+        push_config pc
+        LEFT JOIN
+        push_time pt ON pc.id = pt.push_config_id AND pt.enable_flag = 1
+        WHERE
+        pc.enable_flag = 1
+        ORDER BY pc.id
+    </select>
+
+</mapper>

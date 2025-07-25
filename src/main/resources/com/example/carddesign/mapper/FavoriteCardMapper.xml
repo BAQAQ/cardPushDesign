@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.carddesign.mapper.FavoriteCardMapper">
+
+    <insert id="insertFavoriteCard" parameterType="com.example.carddesign.vo.FavoriteCard" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO favorite_card (
+        user_id, project_code, content, business_type, is_cancellable, enable_flag, create_user, create_time, update_user, update_time
+        ) VALUES (
+        #{userId}, #{projectCode}, #{content}, #{businessType}, #{isCancellable}, #{enableFlag}, #{createUser}, #{createTime}, #{updateUser}, #{updateTime}
+        )
+    </insert>
+
+    <select id="selectFavoriteCardById" parameterType="java.lang.Long" resultType="com.example.carddesign.vo.FavoriteCard">
+        SELECT
+        id, user_id, project_code, content, business_type, is_cancellable, enable_flag, create_user, create_time, update_user, update_time
+        FROM
+        favorite_card
+        WHERE
+        id = #{id}
+    </select>
+
+    <select id="selectAllEnabledFavoriteCardsByUserIdAndProjectCode" resultType="com.example.carddesign.vo.FavoriteCard">
+        SELECT
+        id, user_id, project_code, content, business_type, is_cancellable, enable_flag, create_user, create_time, update_user, update_time
+        FROM
+        favorite_card
+        WHERE
+        user_id = #{userId} AND project_code = #{projectCode} AND enable_flag = 1
+    </select>
+
+    <select id="selectCardByUserIdAndProjectCodeAndContentAndType" resultType="com.example.carddesign.vo.FavoriteCard">
+        SELECT
+        id, user_id, project_code, content, business_type, is_cancellable, enable_flag, create_user, create_time, update_user, update_time
+        FROM
+        favorite_card
+        WHERE
+        user_id = #{userId} AND project_code = #{projectCode} AND content = #{content} AND business_type = #{businessType}
+    </select>
+
+    <select id="selectDefaultFavoriteCards" resultType="com.example.carddesign.vo.FavoriteCard">
+        SELECT
+        id, user_id, project_code, content, business_type, is_cancellable, enable_flag, create_user, create_time, update_user, update_time
+        FROM
+        favorite_card
+        WHERE
+        user_id = -1 AND project_code = 'DEFAULT' AND enable_flag = 1
+    </select>
+
+    <update id="updateFavoriteCard" parameterType="com.example.carddesign.vo.FavoriteCard">
+        UPDATE favorite_card
+        <set>
+            <if test="content != null">
+                content = #{content},
+            </if>
+            <if test="businessType != null">
+                business_type = #{businessType},
+            </if>
+            <if test="isCancellable != null">
+                is_cancellable = #{isCancellable},
+            </if>
+            <if test="enableFlag != null">
+                enable_flag = #{enableFlag},
+            </if>
+            update_user = #{updateUser},
+            update_time = #{updateTime}
+        </set>
+        WHERE
+        id = #{id}
+    </update>
+
+    <select id="selectAllCardsForUserAndProject" resultType="com.example.carddesign.vo.FavoriteCard">
+        SELECT
+        id, user_id, project_code, content, business_type, is_cancellable, enable_flag, create_user, create_time, update_user, update_time
+        FROM
+        favorite_card
+        WHERE
+        (user_id = #{userId} AND project_code = #{projectCode})
+        OR (user_id = -1 AND project_code = 'DEFAULT' AND enable_flag = 1)
+        ORDER BY id
+    </select>
+
+</mapper>
